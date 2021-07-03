@@ -1,11 +1,11 @@
-import { Form, Input, Select, Space, Button } from "antd";
+import { Form, Input, Select, Button } from "antd";
 import queryFields from "../helpers/FieldsData";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import Operators from "../helpers/Operators";
 
 const { Option } = Select;
 
-const QueryBuilder = ({onQuerySubmit, onQueryReset}) => {
+const QueryBuilder = ({ onQuerySubmit, onQueryReset }) => {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
@@ -43,7 +43,7 @@ const QueryBuilder = ({onQuerySubmit, onQueryReset}) => {
                   width: "100%",
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: 'center'
+                  alignItems: "center",
                 }}
               >
                 <Form.Item
@@ -62,7 +62,11 @@ const QueryBuilder = ({onQuerySubmit, onQueryReset}) => {
                       fieldKey={[field.fieldKey, "field"]}
                       rules={[{ required: true, message: "Missing field" }]}
                     >
-                      <Select placeholder="Select field" showSearch style={{ width: "100%" }}>
+                      <Select
+                        placeholder="Select field"
+                        showSearch
+                        style={{ width: "100%" }}
+                      >
                         {queryFields.map((item) => (
                           <Option key={item} value={item}>
                             {item}
@@ -89,7 +93,11 @@ const QueryBuilder = ({onQuerySubmit, onQueryReset}) => {
                       fieldKey={[field.fieldKey, "operator"]}
                       rules={[{ required: true, message: "Missing operator" }]}
                     >
-                      <Select placeholder="Select operator" showSearch style={{ width: "100%" }}>
+                      <Select
+                        placeholder="Select operator"
+                        showSearch
+                        style={{ width: "100%" }}
+                      >
                         {Operators.map((item) => (
                           <Option key={item.value} value={item.value}>
                             {item.name}
@@ -99,16 +107,45 @@ const QueryBuilder = ({onQuerySubmit, onQueryReset}) => {
                     </Form.Item>
                   )}
                 </Form.Item>
-
                 <Form.Item
-                  {...field}
-                  label="Value"
-                  style={{ width: "30%" }}
-                  name={[field.name, "value"]}
-                  fieldKey={[field.fieldKey, "value"]}
-                  rules={[{ required: true, message: "Missing value" }]}
+                  noStyle
+                  shouldUpdate={(prevValues, curValues) =>
+                    prevValues.queryName !== curValues.queryName ||
+                    prevValues.subQueries !== curValues.subQueries
+                  }
                 >
-                  <Input placeholder="Enter value" style={{ width: "100%" }} />
+                  {() => (
+                    <Form.Item
+                      {...field}
+                      label="Value"
+                      style={{ width: "30%" }}
+                      name={[field.name, "value"]}
+                      fieldKey={[field.fieldKey, "value"]}
+                      rules={[
+                        {
+                          required: form.getFieldValue("subQueries")[field.key]
+                            ? form.getFieldValue("subQueries")[field.key]
+                                .operator !== "exists" &&
+                              form.getFieldValue("subQueries")[field.key]
+                                .operator !== "notExists"
+                            : true,
+                          message: "Missing value",
+                        },
+                      ]}
+                    >
+                      <Input
+                        disabled={
+                          form.getFieldValue("subQueries")[field.key] &&
+                          (form.getFieldValue("subQueries")[field.key]
+                            .operator === "exists" ||
+                            form.getFieldValue("subQueries")[field.key]
+                              .operator === "notExists")
+                        }
+                        placeholder="Enter value"
+                        style={{ width: "100%" }}
+                      />
+                    </Form.Item>
+                  )}
                 </Form.Item>
 
                 <MinusCircleOutlined onClick={() => remove(field.name)} />

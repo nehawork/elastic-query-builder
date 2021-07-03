@@ -1,15 +1,6 @@
 const formatQuery = (queries) => {
-  const queryObj = { must: [], must_not: [] };
-  // {name: 'Is Equal to', value:'eq'},
-  // {name: 'Not Equal to', value: 'neq'},
-  // {name: 'Contains', value: 'contains'},
-  // {name: 'Not Contains', value:'not-contains'},
-  // {name: 'Starts with', value: 'startsWith'},
-  // {name: 'Not Starts with', value:'notStartsWith'},
-  // {name: 'Less than', value: 'lt'},
-  // {name: 'Less than or equal', value:'lte'},
-  // {name: 'Greater than', value: 'gt'},
-  // {name: 'Greater than or equal', value:'gte'},
+  const queryObj = { must: [], must_not: [], should: [] };
+
   queries.forEach((element) => {
     switch (element.operator) {
       case "eq":
@@ -23,23 +14,43 @@ const formatQuery = (queries) => {
         });
         break;
       case "contains":
-        queryObj.must.push({
-          wildcard: { [element.field]: element.value + "*" },
+        queryObj.should.push({
+          query_string: {
+            default_field: element.field,
+            query: element.value,
+          },
         });
         break;
       case "not-contains":
-        queryObj.must_not.push({
-          wildcard: { [element.field]: element.value + "*" },
+        queryObj.should.push({
+          bool: {
+            must_not: {
+              query_string: {
+                default_field: element.field,
+                query: element.value,
+              },
+            },
+          },
         });
         break;
       case "startsWith":
         queryObj.must.push({
-          match_phrase_prefix: { [element.field]: element.value },
+          match_phrase_prefix: { [element.field]: element.value + "*" },
         });
         break;
       case "notStartsWith":
         queryObj.must_not.push({
-          match_phrase_prefix: { [element.field]: element.value },
+          match_phrase_prefix: { [element.field]: element.value + "*" },
+        });
+        break;
+      case "endsWith":
+        queryObj.must.push({
+          match_phrase_prefix: { [element.field]: "*" + element.value },
+        });
+        break;
+      case "notEndsWith":
+        queryObj.must_not.push({
+          match_phrase_prefix: { [element.field]: "*" + element.value },
         });
         break;
       case "lt":
@@ -60,6 +71,16 @@ const formatQuery = (queries) => {
       case "gte":
         queryObj.must.push({
           range: { [element.field]: { gte: element.value } },
+        });
+        break;
+      case "exists":
+        queryObj.must.push({
+          exists: { field: element.field },
+        });
+        break;
+      case "notExists":
+        queryObj.must_not.push({
+          exists: { field: element.field },
         });
         break;
 
