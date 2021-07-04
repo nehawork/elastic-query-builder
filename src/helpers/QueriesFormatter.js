@@ -5,28 +5,28 @@ const formatQuery = (queries) => {
     switch (element.operator) {
       case "eq":
         queryObj.must.push({
-          match_pharase: { [element.field]: element.value },
+          match_pharase: { [element.field]: { query: element.value } },
         });
         break;
       case "neq":
         queryObj.must_not.push({
-          match_pharase: { [element.field]: element.value },
+          match_pharase: { [element.field]: { query: element.value } },
         });
         break;
       case "contains":
-        queryObj.should.push({
+        queryObj.must.push({
           query_string: {
-            default_field: element.field,
+            fields: [element.field],
             query: element.value,
           },
         });
         break;
       case "not-contains":
-        queryObj.should.push({
+        queryObj.must_not.push({
           bool: {
             must_not: {
               query_string: {
-                default_field: element.field,
+                fields: [element.field],
                 query: element.value,
               },
             },
@@ -35,22 +35,34 @@ const formatQuery = (queries) => {
         break;
       case "startsWith":
         queryObj.must.push({
-          match_phrase_prefix: { [element.field]: element.value + "*" },
+          query_string: {
+            fields: [element.field],
+            query: element.value + "*",
+          },
         });
         break;
       case "notStartsWith":
         queryObj.must_not.push({
-          match_phrase_prefix: { [element.field]: element.value + "*" },
+          query_string: {
+            fields: [element.field],
+            query: element.value + "*",
+          },
         });
         break;
       case "endsWith":
         queryObj.must.push({
-          match_phrase_prefix: { [element.field]: "*" + element.value },
+          query_string: {
+            fields: [element.field],
+            query: "*" + element.value,
+          },
         });
         break;
       case "notEndsWith":
         queryObj.must_not.push({
-          match_phrase_prefix: { [element.field]: "*" + element.value },
+          query_string: {
+            fields: [element.field],
+            query: "*" + element.value,
+          },
         });
         break;
       case "lt":
