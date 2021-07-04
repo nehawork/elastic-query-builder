@@ -3,6 +3,7 @@ import QueryBuilder from "./lib/QueryBuilder";
 import { Layout, Row, Col } from "antd";
 import { useState } from "react";
 import formatQuery from "./helpers/QueriesFormatter";
+import GmailIcon from "./helpers/GmailIcon";
 
 const { Header, Footer, Content } = Layout;
 const App = () => {
@@ -39,7 +40,14 @@ const App = () => {
         </Row>
       </Content>
       <Footer>
-        <h4>&#169;Query Builder - Author: Neha Ramchandani</h4>
+        <h4>&#169;Query Builder - Author: Neha Ramchandani&nbsp;</h4>
+        <a
+          rel="noreferrer"
+          href="mailto:neharamchandani02@gmail.com?&subject=Regarding%20Query%20Builder"
+          target="_blank"
+        >
+          <GmailIcon />
+        </a>
       </Footer>
     </Layout>
   );
