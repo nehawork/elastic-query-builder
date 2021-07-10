@@ -2,19 +2,23 @@ import "./App.css";
 import QueryBuilder from "./lib/QueryBuilder";
 import { Layout, Row, Col } from "antd";
 import { useState } from "react";
-import formatQuery from "./helpers/QueriesFormatter";
+// import formatQuery from "./helpers/QueriesFormatter";
 import GmailIcon from "./helpers/GmailIcon";
 
 const { Header, Footer, Content } = Layout;
 const App = () => {
-  const [queryData, setQueryData] = useState({
-    query: {
-      bool: {},
-    },
-  });
+  // const [queryData, setQueryData] = useState({
+  //   query: {
+  //     bool: {},
+  //   },
+  // });
+  const [queryData, setQueryData] = useState(
+[]
+  );
 
   const onQuerySubmit = (queryData) => {
-    setQueryData({ query: { bool: formatQuery(queryData) } });
+    setQueryData(queryData);
+    // setQueryData({ query: { bool: formatQuery(queryData) } });
   };
 
   return (
