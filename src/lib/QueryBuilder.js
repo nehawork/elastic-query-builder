@@ -9,6 +9,7 @@ const QueryBuilder = ({ onQuerySubmit, onQueryReset }) => {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
+    console.log(values);
     onQuerySubmit(values);
   };
 
